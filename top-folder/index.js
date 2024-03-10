@@ -7,6 +7,7 @@ const url = require('url');
 const replaceTemplate = (temp, team) => {
   let output = temp.replace(/{%TEAMNAME%}/g, team.Tm);
   output = output.replace(/{%#BATTERS%}/g, team.BATTERS);
+  output = output.replace(/{%ID%}/g, team.id);
   output = output.replace(/{%AGE%}/g, team.BatAge);
   output = output.replace(/{%RUNSPERGAME%}/g, team.R);
   output = output.replace(/{%GAMES%}/g, team.G);
@@ -53,10 +54,12 @@ const tempCard = fs.readFileSync(
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const teamDataObj = JSON.parse(data);
 const server = http.createServer((req, res) => {
-  const pathName = req.url;
+  console.log(req.url);
+  console.log(url.parse(req.url, true));
+  const pathname = req.url;
 
   // Overview
-  if (pathName === '/' || pathName === '/overview') {
+  if (pathname === '/' || pathname === '/overview') {
     res.writeHead(200, { 'Content-type': 'text/html' });
     const cardsHtml = teamDataObj
       .map((el) => replaceTemplate(tempCard, el))
@@ -65,11 +68,11 @@ const server = http.createServer((req, res) => {
     res.end(output);
 
     // Team page
-  } else if (pathName === '/team') {
+  } else if (pathname === '/team') {
     res.end('This is the team');
 
     // API page
-  } else if (pathName === '/api') {
+  } else if (pathname === '/api') {
     res.writeHead(200, { 'Content-type': 'application/json' });
     res.end(data);
 
