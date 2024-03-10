@@ -29,6 +29,7 @@ module.exports = (temp, team) => {
   output = output.replace(/{%SACFLYS%}/g, team.SF);
   output = output.replace(/{%INTENTONALWALKS%}/g, team.IBB);
   output = output.replace(/{%LEFTONBASE%}/g, team.LOB);
-  output = output.replace(/{%SLUG%}/g, team.SLUG);
+  output = output.replace(/{%LOCATION%}/g, team.LOC);
+  output = output.replace(/{%PARK%}/g, team.Park);
   return output;
 };
