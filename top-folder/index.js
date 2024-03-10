@@ -27,7 +27,7 @@ const replaceTemplate = (temp, team) => {
   output = output.replace(/{%ONBASEPERCENTAGE%}/g, team.OBP);
   output = output.replace(/{%SLUGGING%}/g, team.SLG);
   output = output.replace(/{%OPS%}/g, team.OPS);
-  output = output.replace(/{%OPS+%}/g, team.OPSPLUS);
+  output = output.replace(/{%OPSPLUS%}/g, team.OPSPLUS);
   output = output.replace(/{%TOTALBASES%}/g, team.TB);
   output = output.replace(/{%GROUNDEDDOUBLEPLAYS%}/g, team.GDP);
   output = output.replace(/{%HITBYPITCH%}/g, team.HBP);
@@ -54,9 +54,7 @@ const tempCard = fs.readFileSync(
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const teamDataObj = JSON.parse(data);
 const server = http.createServer((req, res) => {
-  console.log(req.url);
-  console.log(url.parse(req.url, true));
-  const pathname = req.url;
+  const { query, pathname } = url.parse(req.url, true);
 
   // Overview
   if (pathname === '/' || pathname === '/overview') {
@@ -68,8 +66,11 @@ const server = http.createServer((req, res) => {
     res.end(output);
 
     // Team page
-  } else if (pathname === '/team') {
-    res.end('This is the team');
+  } else if (pathname === '/product') {
+    res.writeHead(200, { 'Content-type': 'text/html' });
+    const product = teamDataObj[query.id];
+    const output = replaceTemplate(tempTeam, product);
+    res.end(output);
 
     // API page
   } else if (pathname === '/api') {
